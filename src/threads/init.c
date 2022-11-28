@@ -138,7 +138,7 @@ pintos_init (void)
     char *buf = (char *) malloc(cmd_maxlen);
     while (1) {
       printf("PKUOS>");
-      memset(buf, 0, sizeof(cmd_maxlen));
+      memset(buf, 0, cmd_maxlen);
       size_t buf_size = 0;
       char ch;
       while (1) {
@@ -147,27 +147,29 @@ pintos_init (void)
           printf("\n");
           break;
         }
-        else if (ch == 127 && buf_size) {
+        else if (ch == 127) {
+          if (buf_size) {
             buf[--buf_size] = '\0';
             printf("\b \b");
+          }
+            continue;
         }
         if (buf_size >= cmd_maxlen)
           continue;
         
         buf[buf_size++] = ch;
         if (ch > 31)
-          printf("%c", c);
+          printf("%c", ch);
       }
-      
       printf("cmd: %s\n", buf);
       if (!strcmp(buf, "whoami"))
         printf("kimino id desu\n");
       else if (!strcmp(buf, "exit"))
         break;
       else
-        printf("invalid command\n")
-      free(buf);
+        printf("invalid command\n");
     }
+    free(buf);
   }
 
   /* Finish up. */
